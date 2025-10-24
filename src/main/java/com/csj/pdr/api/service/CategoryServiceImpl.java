@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,7 +28,7 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public CategoryResponse getById(String id) {
+    public CategoryResponse getCategoryById(String id) {
         Category category = findById(id);
 
         return factory.toCategoryResponse(category);
@@ -55,9 +56,29 @@ public class CategoryServiceImpl implements ICategoryService {
         return factory.toCategoryResponse(category);
     }
 
-
     private Category findById(String id) {
         return repository.findById(UUID.fromString(id))
                 .orElseThrow();
+    }
+
+    @Override
+    public void deleteCategory(String id) {
+        Category categoryToDelete = Category.of(id);
+
+        repository.delete(categoryToDelete);
+    }
+
+    @Override
+    public void deleteBatchCategories(List<String> ids) {
+        if (ids.isEmpty()) {
+            return;
+        }
+
+        List<Category> categoriesToDelete = ids.stream()
+                .filter(Objects::nonNull)
+                .map(Category::of)
+                .toList();
+
+        repository.deleteAllInBatch(categoriesToDelete);
     }
 }

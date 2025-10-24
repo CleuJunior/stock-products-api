@@ -33,4 +33,8 @@ public class Category {
     public static Category of(String name, boolean active, Type type) {
         return new Category(null, name, active, type);
     }
+
+    public static Category of(String id) {
+        return new Category(UUID.fromString(id), null, false, null);
+    }
 }

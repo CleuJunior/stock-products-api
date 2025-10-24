@@ -26,6 +26,4 @@ public class CategoryFactory {
                 .map(this::toCategoryResponse)
                 .toList();
     }
-
-
 }
