@@ -2,17 +2,19 @@ package com.csj.pdr.api.factory;
 
 import com.csj.pdr.api.build.CategoryBuild;
 import com.csj.pdr.api.domain.Category;
-import com.csj.pdr.api.domain.Type;
 import com.csj.pdr.api.dto.CategoryRequest;
+import com.csj.pdr.api.dto.CategoryResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import java.util.Collections;
+import java.util.List;
+
 import static org.assertj.core.api.BDDAssertions.then;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 class CategoryFactoryTest {
 
     @InjectMocks
@@ -24,13 +26,35 @@ class CategoryFactoryTest {
 
         Category result = underTest.toCategory(request);
 
-        String actualName = assertThat(result).extracting(Category::getName).actual();
-        boolean actualActive = assertThat(result).extracting(Category::isActive).actual();
-        Type actualType = assertThat(result).extracting(Category::getType).actual();
+        then(result).isNotNull();
+        then(result.getName()).isEqualTo(request.name());
+        then(result.isActive()).isEqualTo(request.active());
+        then(result.getType()).isEqualTo(request.type());
+    }
+
+    @Test
+    void shouldMapCategoryToCategoryResponse() {
+        Category category = CategoryBuild.buildCategory();
+
+        CategoryResponse result = underTest.toCategoryResponse(category);
 
         then(result).isNotNull();
-        then(result.getName()).isSameAs(actualName);
-        then(result.isActive()).isSameAs(actualActive);
-        then(result.getType()).isSameAs(actualType);
+        then(result.id()).isEqualTo(category.getId().toString());
+        then(result.name()).isEqualTo(category.getName());
+        then(result.active()).isEqualTo(category.isActive());
+        then(result.type()).isEqualTo(category.getType());
+    }
+
+    @Test
+    void shouldMapCategoriesToCategoriesResponse() {
+        Category category = CategoryBuild.buildCategory();
+
+        List<CategoryResponse> result = underTest.toCategoryResponse(Collections.singletonList(category));
+
+        then(result.size()).isEqualTo(1);
+        then(result.get(0).id()).isEqualTo(category.getId().toString());
+        then(result.get(0).name()).isEqualTo(category.getName());
+        then(result.get(0).active()).isEqualTo(category.isActive());
+        then(result.get(0).type()).isEqualTo(category.getType());
     }
 }

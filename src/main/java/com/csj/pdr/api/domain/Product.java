@@ -60,6 +60,14 @@ public class Product {
         this.registrationDate = LocalDate.now();
     }
 
+    public static Product of(String id) {
+        return new Product(id);
+    }
+
+    private Product(String id) {
+        this.id = UUID.fromString(id);
+    }
+
     public void addCategory(List<Category> categories) {
         if (categories.isEmpty()) {
             return;

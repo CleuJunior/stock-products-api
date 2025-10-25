@@ -18,7 +18,9 @@ public class CategoryFactory {
         return new CategoryResponse(
                 entity.getId().toString(),
                 entity.getName(),
-                entity.isActive(),entity.getType());
+                entity.isActive(),
+                entity.getType()
+        );
     }
 
     public List<CategoryResponse> toCategoryResponse(List<Category> categories) {
