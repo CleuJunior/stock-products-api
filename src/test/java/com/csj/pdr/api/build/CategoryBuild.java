@@ -7,7 +7,7 @@ import com.csj.pdr.api.dto.CategoryResponse;
 
 import java.util.UUID;
 
-public class CategoryBuild {
+public final class CategoryBuild {
 
     private final static UUID ID = UUID.randomUUID();
     private final static String NAME = "Beverage";
