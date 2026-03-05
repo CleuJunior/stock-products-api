@@ -11,15 +11,18 @@ import java.util.List;
 public class CategoryFactory {
 
     public Category toCategory(CategoryRequest request) {
-        return Category.of(request.name(), request.active(),request.type());
+        return new Category(request.name(), request.active(), request.type());
     }
 
     public CategoryResponse toCategoryResponse(Category entity) {
         return new CategoryResponse(
-                entity.getId().toString(),
+                entity.getId(),
                 entity.getName(),
                 entity.isActive(),
-                entity.getType()
+                entity.getType(),
+                entity.getCreationDate(),
+                entity.getUpdateDate(),
+                entity.isDeleted()
         );
     }
 
