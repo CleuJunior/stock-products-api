@@ -63,7 +63,7 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public void deleteCategory(String id) {
-        Category categoryToDelete = Category.of(id);
+        var categoryToDelete = new Category(id);
 
         repository.delete(categoryToDelete);
     }
@@ -74,9 +74,9 @@ public class CategoryServiceImpl implements ICategoryService {
             return;
         }
 
-        List<Category> categoriesToDelete = ids.stream()
+        var categoriesToDelete = ids.stream()
                 .filter(Objects::nonNull)
-                .map(Category::of)
+                .map(Category::new)
                 .toList();
 
         repository.deleteAllInBatch(categoriesToDelete);

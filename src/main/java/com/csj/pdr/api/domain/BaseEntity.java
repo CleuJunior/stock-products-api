@@ -6,7 +6,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -17,6 +16,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.UUID;
+
+import static lombok.AccessLevel.NONE;
 
 @Getter
 @Setter
@@ -29,14 +30,16 @@ public abstract class BaseEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(updatable = false, nullable = false)
     protected UUID id;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    @Setter(AccessLevel.NONE)
+    @Setter(NONE)
     protected OffsetDateTime creationDate;
+
     @LastModifiedDate
-    @Setter(AccessLevel.NONE)
-    private OffsetDateTime updateDate;
-    private boolean deleted;
+    @Setter(NONE)
+    protected OffsetDateTime updateDate;
+    protected boolean deleted;
 
     public String getId() {
         return id.toString();

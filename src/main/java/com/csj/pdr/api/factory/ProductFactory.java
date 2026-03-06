@@ -5,15 +5,19 @@ import com.csj.pdr.api.domain.Product;
 import com.csj.pdr.api.dto.CategoryResponse;
 import com.csj.pdr.api.dto.ProductRequest;
 import com.csj.pdr.api.dto.ProductResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class ProductFactory {
 
+    private final CategoryFactory categoryFactory;
+
     public Product toProduct(ProductRequest request, List<Category> categories) {
-        Product product = new Product();
+        var product = new Product();
 
         product.setName(request.name());
         product.setActive(request.active());
@@ -29,16 +33,15 @@ public class ProductFactory {
     }
 
     public ProductResponse toProductResponse(Product entity) {
-        List<CategoryResponse> categories = entity.getCategories().stream()
-                .map(CategoryResponse::of)
-                .toList();
+        var categories = entity.getCategories();
+        var categoryResponses = categoryFactory.toCategoryResponse(categories);
 
         return new ProductResponse(
                 entity.getId().toString(),
                 entity.getName(),
                 entity.isActive(),
                 entity.getSku(),
-                categories,
+                categoryResponses,
                 entity.getCostValue(),
                 entity.getIcms(),
                 entity.getSaleValue(),

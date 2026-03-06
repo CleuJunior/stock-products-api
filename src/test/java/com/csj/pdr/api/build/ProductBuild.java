@@ -1,7 +1,9 @@
 package com.csj.pdr.api.build;
 
+import com.csj.pdr.api.domain.BaseEntity;
 import com.csj.pdr.api.domain.Category;
 import com.csj.pdr.api.domain.Product;
+import com.csj.pdr.api.dto.CategoryResponse;
 import com.csj.pdr.api.dto.ProductRequest;
 import com.csj.pdr.api.dto.ProductResponse;
 
@@ -43,12 +45,45 @@ public final class ProductBuild {
     }
 
     public static ProductResponse buildProductResponse() {
-        return ProductResponse.of(buildProduct());
+        var product = buildProduct();
+        var categoriesResponse = categoryResponseList(product.getCategories());
+
+        return new ProductResponse(
+                product.getId().toString(),
+                product.getName(),
+                product.isActive(),
+                product.getSku(),
+                categoriesResponse,
+                product.getCostValue(),
+                product.getIcms(),
+                product.getSaleValue(),
+                product.getImg(),
+                product.getRegistrationDate(),
+                product.getStock()
+        );
+    }
+
+    private static CategoryResponse categoryResponse(Category category) {
+        return new CategoryResponse(
+                category.getId(),
+                category.getName(),
+                category.isActive(),
+                category.getType(),
+                category.getCreationDate(),
+                category.getUpdateDate(),
+                category.isDeleted()
+        );
+    }
+
+    private static List<CategoryResponse> categoryResponseList(List<Category> categories) {
+        return categories.stream()
+                .map(ProductBuild::categoryResponse)
+                .toList();
     }
 
     public static ProductRequest buildProductRequest() {
-        List<String> categoriesId = CATEGORIES.stream()
-                .map(cat -> cat.getId().toString())
+        var categoriesId = CATEGORIES.stream()
+                .map(BaseEntity::getId)
                 .toList();
 
         return new ProductRequest(
