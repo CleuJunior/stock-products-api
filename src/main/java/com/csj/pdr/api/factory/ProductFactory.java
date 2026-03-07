@@ -2,7 +2,6 @@ package com.csj.pdr.api.factory;
 
 import com.csj.pdr.api.domain.Category;
 import com.csj.pdr.api.domain.Product;
-import com.csj.pdr.api.dto.CategoryResponse;
 import com.csj.pdr.api.dto.ProductRequest;
 import com.csj.pdr.api.dto.ProductResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,14 +15,14 @@ public class ProductFactory {
 
     private final CategoryFactory categoryFactory;
 
-    public Product toProduct(ProductRequest request, List<Category> categories) {
+    public Product toProduct(ProductRequest request, Category category) {
         var product = new Product();
 
         product.setName(request.name());
         product.setActive(request.active());
         product.setSku(request.sku());
         product.setCostValue(request.costValue());
-        product.addCategory(categories);
+        product.setCategory(category);
         product.setIcms(request.icms());
         product.setSaleValue(request.saleValue());
         product.setImg(request.img());
@@ -33,15 +32,15 @@ public class ProductFactory {
     }
 
     public ProductResponse toProductResponse(Product entity) {
-        var categories = entity.getCategories();
-        var categoryResponses = categoryFactory.toCategoryResponse(categories);
+        var categories = entity.getCategory();
+        var categoryResponse = categoryFactory.toCategoryResponse(categories);
 
         return new ProductResponse(
-                entity.getId().toString(),
+                entity.getId(),
                 entity.getName(),
                 entity.isActive(),
                 entity.getSku(),
-                categoryResponses,
+                categoryResponse,
                 entity.getCostValue(),
                 entity.getIcms(),
                 entity.getSaleValue(),

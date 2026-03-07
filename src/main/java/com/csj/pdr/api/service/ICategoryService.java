@@ -1,5 +1,6 @@
 package com.csj.pdr.api.service;
 
+import com.csj.pdr.api.domain.Category;
 import com.csj.pdr.api.dto.CategoryRequest;
 import com.csj.pdr.api.dto.CategoryResponse;
 
@@ -9,7 +10,7 @@ public interface ICategoryService {
 
     List<CategoryResponse> getListCategories();
 
-    CategoryResponse getCategoryById(String id);
+    Category getCategoryById(String id);
 
     CategoryResponse saveCategory(CategoryRequest request);
 

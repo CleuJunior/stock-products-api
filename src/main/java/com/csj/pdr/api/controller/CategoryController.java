@@ -27,7 +27,8 @@ public class CategoryController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable String id) {
-        return ResponseEntity.status(HttpStatus.OK).body(service.getCategoryById(id));
+//        return ResponseEntity.status(HttpStatus.OK).body(service.getCategoryById(id));
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
     @GetMapping

@@ -1,21 +1,21 @@
 package com.csj.pdr.api.service;
 
+import com.csj.pdr.api.domain.Product;
 import com.csj.pdr.api.dto.ProductRequest;
-import com.csj.pdr.api.dto.ProductResponse;
 
 import java.util.List;
 
 public interface IProductService {
 
-    List<ProductResponse> getListProducts();
+    List<Product> getListProducts();
 
-    ProductResponse getProductById(String id);
+    Product getProductById(String id);
 
-    ProductResponse saveProduct(ProductRequest request);
+    Product saveProduct(Product request);
 
-    ProductResponse updateProduct(String id, ProductRequest request);
+    Product updateProduct(String id, ProductRequest request);
 
-    void deleteProduct(String id);
+    void softDeleteProduct(String id);
 
-    void deleteBatchProducts(List<String> ids);
+    void softDeleteBatchProducts(List<String> ids);
 }

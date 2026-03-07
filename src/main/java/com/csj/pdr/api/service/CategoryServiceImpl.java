@@ -28,10 +28,8 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public CategoryResponse getCategoryById(String id) {
-        Category category = findById(id);
-
-        return factory.toCategoryResponse(category);
+    public Category getCategoryById(String id) {
+        return findById(id);
     }
 
     @Override

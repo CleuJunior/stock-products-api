@@ -2,8 +2,6 @@ package com.csj.pdr.api.service;
 
 import com.csj.pdr.api.domain.Category;
 import com.csj.pdr.api.domain.Product;
-import com.csj.pdr.api.dto.CategoryRequest;
-import com.csj.pdr.api.dto.CategoryResponse;
 import com.csj.pdr.api.dto.ProductRequest;
 import com.csj.pdr.api.dto.ProductResponse;
 import com.csj.pdr.api.factory.ProductFactory;
@@ -23,56 +21,46 @@ public class ProductServiceImpl implements IProductService {
 
     private final ProductRepository repository;
     private final CategoryRepository categoryRepository;
-    private final ProductFactory factory;
 
     @Override
-    public List<ProductResponse> getListProducts() {
-        List<Product> products = repository.findAll();
-
-        return factory.toProductsResponse(products);
+    public List<Product> getListProducts() {
+        return repository.findAll();
     }
 
     @Override
-    public ProductResponse getProductById(String id) {
-        Product product = findById(id);
-
-        return factory.toProductResponse(product);
+    public Product getProductById(String id) {
+        return findById(id);
     }
 
     @Override
-    public ProductResponse saveProduct(ProductRequest request) {
-        List<Category> categories = findCategories(request.categories());
-        Product entity = factory.toProduct(request, categories);
-
-        repository.save(entity);
-
-        return factory.toProductResponse(entity);
+    public Product saveProduct(Product request) {
+        return repository.save(request);
     }
 
     @Override
-    public ProductResponse updateProduct(String id, ProductRequest request) {
-        Product productToUpdate = findById(id);
+    public Product updateProduct(String id, ProductRequest request) {
+        var productToUpdate = findById(id);
 
-        Optional.ofNullable(request.name()).ifPresent(productToUpdate::setName);
-        Optional.ofNullable(request.active()).ifPresent(productToUpdate::setActive);
-        Optional.ofNullable(request.sku()).ifPresent(productToUpdate::setSku);
-        Optional.ofNullable(request.costValue()).ifPresent(productToUpdate::setCostValue);
-        Optional.ofNullable(request.icms()).ifPresent(productToUpdate::setIcms);
-        Optional.ofNullable(request.saleValue()).ifPresent(productToUpdate::setSaleValue);
-        Optional.ofNullable(request.img()).ifPresent(productToUpdate::setImg);
-        Optional.ofNullable(request.stock()).ifPresent(productToUpdate::setStock);
+        Optional.ofNullable(request.name())
+                .ifPresent(productToUpdate::setName);
+        Optional.ofNullable(request.active())
+                .ifPresent(productToUpdate::setActive);
+        Optional.ofNullable(request.sku())
+                .ifPresent(productToUpdate::setSku);
+        Optional.ofNullable(request.costValue())
+                .ifPresent(productToUpdate::setCostValue);
+        Optional.ofNullable(request.icms())
+                .ifPresent(productToUpdate::setIcms);
+        Optional.ofNullable(request.saleValue())
+                .ifPresent(productToUpdate::setSaleValue);
+        Optional.ofNullable(request.img())
+                .ifPresent(productToUpdate::setImg);
+        Optional.ofNullable(request.stock())
+                .ifPresent(productToUpdate::setStock);
+        Optional.ofNullable(request.category())
+                .ifPresent(categories -> productToUpdate.setCategory(findCategory(categories)));
 
-        Optional.ofNullable(request.categories())
-                .filter(categories -> !categories.isEmpty())
-                .ifPresent(categories -> {
-                    List<Category> foundCategories = findCategories(categories);
-
-                    productToUpdate.addCategory(foundCategories);
-                });
-
-        repository.save(productToUpdate);
-
-        return factory.toProductResponse(productToUpdate);
+       return repository.save(productToUpdate);
     }
 
     private Product findById(String id) {
@@ -80,32 +68,32 @@ public class ProductServiceImpl implements IProductService {
                 .orElseThrow();
     }
 
-    private List<Category> findCategories(List<String> categoriesId) {
-        List<UUID> uuids = categoriesId.stream()
-                .map(UUID::fromString)
-                .toList();
+    private Category findCategory(String categoryId) {
+        var uuid = UUID.fromString(categoryId);
 
-        return categoryRepository.findAllById(uuids);
+        return categoryRepository.findById(uuid).orElseThrow();
     }
 
     @Override
-    public void deleteProduct(String id) {
-        Product productToDelete = Product.of(id);
+    public void softDeleteProduct(String id) {
+        var productToDelete = new Product(id);
+        productToDelete.setDeleted(true);
 
-        repository.delete(productToDelete);
+        repository.save(productToDelete);
     }
 
     @Override
-    public void deleteBatchProducts(List<String> ids) {
-        if (ids.isEmpty()) {
-            return;
-        }
-
-        List<Product> productsToDelete = ids.stream()
+    public void softDeleteBatchProducts(List<String> ids) {
+        var productsToDelete = ids.stream()
                 .filter(Objects::nonNull)
-                .map(Product::of)
+                .map(id -> {
+                    var productToDelete = new Product(id);
+                    productToDelete.setDeleted(true);
+
+                    return productToDelete;
+                })
                 .toList();
 
-        repository.deleteAllInBatch(productsToDelete);
+        repository.saveAll(productsToDelete);
     }
 }
