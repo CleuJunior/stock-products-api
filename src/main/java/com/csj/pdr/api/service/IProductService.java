@@ -13,7 +13,7 @@ public interface IProductService {
 
     Product saveProduct(Product request);
 
-    Product updateProduct(String id, ProductRequest request);
+    Product updateProduct(String id, Product request);
 
     void softDeleteProduct(String id);
 

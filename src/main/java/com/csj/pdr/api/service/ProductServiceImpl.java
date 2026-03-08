@@ -38,27 +38,18 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public Product updateProduct(String id, ProductRequest request) {
+    public Product updateProduct(String id, Product request) {
         var productToUpdate = findById(id);
 
-        Optional.ofNullable(request.name())
-                .ifPresent(productToUpdate::setName);
-        Optional.ofNullable(request.active())
-                .ifPresent(productToUpdate::setActive);
-        Optional.ofNullable(request.sku())
-                .ifPresent(productToUpdate::setSku);
-        Optional.ofNullable(request.costValue())
-                .ifPresent(productToUpdate::setCostValue);
-        Optional.ofNullable(request.icms())
-                .ifPresent(productToUpdate::setIcms);
-        Optional.ofNullable(request.saleValue())
-                .ifPresent(productToUpdate::setSaleValue);
-        Optional.ofNullable(request.img())
-                .ifPresent(productToUpdate::setImg);
-        Optional.ofNullable(request.stock())
-                .ifPresent(productToUpdate::setStock);
-        Optional.ofNullable(request.category())
-                .ifPresent(categories -> productToUpdate.setCategory(findCategory(categories)));
+        productToUpdate.setName(request.getName());
+        productToUpdate.setActive(request.isActive());
+        productToUpdate.setSku(request.getSku());
+        productToUpdate.setCostValue(request.getCostValue());
+        productToUpdate.setIcms(request.getIcms());
+        productToUpdate.setSaleValue(request.getSaleValue());
+        productToUpdate.setImg(request.getImg());
+        productToUpdate.setStock(request.getStock());
+        productToUpdate.setCategory(request.getCategory());
 
        return repository.save(productToUpdate);
     }
@@ -66,12 +57,6 @@ public class ProductServiceImpl implements IProductService {
     private Product findById(String id) {
         return repository.findById(UUID.fromString(id))
                 .orElseThrow();
-    }
-
-    private Category findCategory(String categoryId) {
-        var uuid = UUID.fromString(categoryId);
-
-        return categoryRepository.findById(uuid).orElseThrow();
     }
 
     @Override

@@ -55,12 +55,15 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-//    @PutMapping(value = "/{id}")
-//    public ResponseEntity<ProductResponse> updateProduct(@PathVariable String id, @RequestBody ProductRequest request) {
-//        ProductResponse response = service.updateProduct(id, request);
-//
-//        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
-//    }
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable String id, @RequestBody ProductRequest request) {
+        var category = categoryService.getCategoryById(request.category());
+        var toUpdate = factory.toProduct(request, category);
+        var updatedProduct = service.updateProduct(id, toUpdate);
+        var response = factory.toProductResponse(updatedProduct);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+    }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable String id) {
