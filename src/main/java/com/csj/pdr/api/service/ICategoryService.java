@@ -2,19 +2,18 @@ package com.csj.pdr.api.service;
 
 import com.csj.pdr.api.domain.Category;
 import com.csj.pdr.api.dto.CategoryRequest;
-import com.csj.pdr.api.dto.CategoryResponse;
 
 import java.util.List;
 
 public interface ICategoryService {
 
-    List<CategoryResponse> getListCategories();
+    List<Category> getListCategories();
 
     Category getCategoryById(String id);
 
-    CategoryResponse saveCategory(CategoryRequest request);
+    Category saveCategory(CategoryRequest request);
 
-    CategoryResponse updateCategory(String id, CategoryRequest request);
+    Category updateCategory(String id, CategoryRequest request);
 
     void deleteCategory(String id);
 

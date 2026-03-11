@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -18,18 +19,23 @@ import java.util.stream.Collectors;
 public class CategoryFactory {
 
     private final IProductService productService;
+    private final ProductRepository productRepository;
 
     public Category toCategory(CategoryRequest request) {
         return new Category(
                 request.name(),
                 request.active(),
                 request.type(),
-                request.productsId().stream().map(Product::new).collect(Collectors.toSet())
+                products(request.productsId())
         );
     }
 
     private Set<Product> products(Set<String> ids) {
-        return ids.stream().map(Product::new).collect(Collectors.toSet());
+        var uuids = ids.stream()
+                .map(UUID::fromString)
+                .collect(Collectors.toSet());
+
+        return productRepository.findAllById(uuids);
     }
 
     public CategoryResponse toCategoryResponse(Category entity) {

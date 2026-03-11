@@ -1,7 +1,6 @@
 package com.csj.pdr.api.service;
 
 import com.csj.pdr.api.domain.Product;
-import com.csj.pdr.api.dto.ProductRequest;
 
 import java.util.List;
 

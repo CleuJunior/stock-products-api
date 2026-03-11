@@ -2,6 +2,7 @@ package com.csj.pdr.api.controller;
 
 import com.csj.pdr.api.dto.CategoryRequest;
 import com.csj.pdr.api.dto.CategoryResponse;
+import com.csj.pdr.api.factory.CategoryFactory;
 import com.csj.pdr.api.service.ICategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,43 +25,52 @@ import java.util.List;
 public class CategoryController {
 
     private final ICategoryService service;
+    private final CategoryFactory factory;
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable String id) {
-//        return ResponseEntity.status(HttpStatus.OK).body(service.getCategoryById(id));
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        var category = service.getCategoryById(id);
+        var response = factory.toCategoryResponse(category);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping
     public ResponseEntity<List<CategoryResponse>> listOfCategories() {
-        return ResponseEntity.status(HttpStatus.OK).body(service.getListCategories());
+        var categories = service.getListCategories();
+        var response = factory.toCategoryResponse(categories);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PostMapping
     public ResponseEntity<CategoryResponse> saveCategory(@RequestBody CategoryRequest request) {
-        CategoryResponse response = service.saveCategory(request);
+        var categoryRequest = factory.toCategory(request);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        var categories = service.getListCategories();
+        var response = factory.toCategoryResponse(categories);
+
+        return null;
     }
-
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<CategoryResponse> updateCategory(@PathVariable String id, @RequestBody CategoryRequest request) {
-        CategoryResponse response = service.updateCategory(id, request);
-
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
-    }
-
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable String id) {
-        service.deleteCategory(id);
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    @DeleteMapping("/batch")
-    public ResponseEntity<Void> deleteBatchCategory(@RequestParam(required = false) List<String> ids) {
-        service.deleteBatchCategories(ids);
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
+//
+//    @PutMapping(value = "/{id}")
+//    public ResponseEntity<CategoryResponse> updateCategory(@PathVariable String id, @RequestBody CategoryRequest request) {
+//        CategoryResponse response = service.updateCategory(id, request);
+//
+//        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+//    }
+//
+//    @DeleteMapping(value = "/{id}")
+//    public ResponseEntity<Void> deleteCategory(@PathVariable String id) {
+//        service.deleteCategory(id);
+//
+//        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+//    }
+//
+//    @DeleteMapping("/batch")
+//    public ResponseEntity<Void> deleteBatchCategory(@RequestParam(required = false) List<String> ids) {
+//        service.deleteBatchCategories(ids);
+//
+//        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+//    }
 }

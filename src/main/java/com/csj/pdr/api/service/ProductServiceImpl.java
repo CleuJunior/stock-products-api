@@ -1,18 +1,12 @@
 package com.csj.pdr.api.service;
 
-import com.csj.pdr.api.domain.Category;
 import com.csj.pdr.api.domain.Product;
-import com.csj.pdr.api.dto.ProductRequest;
-import com.csj.pdr.api.dto.ProductResponse;
-import com.csj.pdr.api.factory.ProductFactory;
-import com.csj.pdr.api.repository.CategoryRepository;
 import com.csj.pdr.api.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -20,7 +14,6 @@ import java.util.UUID;
 public class ProductServiceImpl implements IProductService {
 
     private final ProductRepository repository;
-    private final CategoryRepository categoryRepository;
 
     @Override
     public List<Product> getListProducts() {
@@ -61,7 +54,7 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public void softDeleteProduct(String id) {
-        var productToDelete = new Product(id);
+        var productToDelete = findById(id);
         productToDelete.setDeleted(true);
 
         repository.save(productToDelete);
@@ -72,7 +65,7 @@ public class ProductServiceImpl implements IProductService {
         var productsToDelete = ids.stream()
                 .filter(Objects::nonNull)
                 .map(id -> {
-                    var productToDelete = new Product(id);
+                    var productToDelete = findById(id);
                     productToDelete.setDeleted(true);
 
                     return productToDelete;

@@ -2,8 +2,6 @@ package com.csj.pdr.api.service;
 
 import com.csj.pdr.api.domain.Category;
 import com.csj.pdr.api.dto.CategoryRequest;
-import com.csj.pdr.api.dto.CategoryResponse;
-import com.csj.pdr.api.factory.CategoryFactory;
 import com.csj.pdr.api.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,13 +16,10 @@ import java.util.UUID;
 public class CategoryServiceImpl implements ICategoryService {
 
     private final CategoryRepository repository;
-    private final CategoryFactory factory;
 
     @Override
-    public List<CategoryResponse> getListCategories() {
-        List<Category> categories = repository.findAll();
-
-        return factory.toCategoryResponse(categories);
+    public List<Category> getListCategories() {
+        return repository.findAll();
     }
 
     @Override
@@ -33,25 +28,19 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public CategoryResponse saveCategory(CategoryRequest request) {
-        Category category = factory.toCategory(request);
-
-        repository.save(category);
-
-        return factory.toCategoryResponse(category);
+    public Category saveCategory(CategoryRequest request) {
+        return repository.save(new Category());
     }
 
     @Override
-    public CategoryResponse updateCategory(String id, CategoryRequest request) {
+    public Category updateCategory(String id, CategoryRequest request) {
         Category category = findById(id);
 
         Optional.ofNullable(request.name()).ifPresent(category::setName);
         Optional.ofNullable(request.active()).ifPresent(category::setActive);
         Optional.ofNullable(request.type()).ifPresent(category::setType);
 
-        repository.save(category);
-
-        return factory.toCategoryResponse(category);
+        return repository.save(category);
     }
 
     private Category findById(String id) {
